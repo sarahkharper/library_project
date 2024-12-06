@@ -11,10 +11,10 @@ function Book(title, author, pageLength, finished){
     this.pageLength = pageLength;
     this.finished = finished;
 
-    /*function for printing information about object*/
-    this.info = function(){
+    //function for printing information about object
+    /*this.info = function(){
         return(`${this.title} by ${this.author}, ${this.pageLength} pages, ${this.finished}`);
-    };
+    };*/
 }
 
 /*function for creating book objs and adding them to library array*/
@@ -35,23 +35,37 @@ addBookToLibrary(myLibrary, "gomens", "Good Omens", "Terry Prachett & Neil Gaima
 
 addBookToLibrary(myLibrary, "sandman", "The Sandman", "Neil Gaiman", "2,168", "in progress");
 
+//FUNCTION to check if object is iterable (used in appendBookToPage function)
+function isIterable(obj) {
+    return typeof obj[Symbol.iterator] === 'function';
+  }
+
 /*FUNCTION to loop through library array and display each book on page*/
 //create variable holding reference to bookList
-
 function appendBookToPage(library){
+    //create variable holding reference to book list container div
     const blist = document.querySelector(".bookList");
+    
+    //iterate through all book objects in library array
     for(const item of library){
+        
+        //create a new entry div and store in variables
         const newEntry = document.createElement("div");
-        newEntry.setAttribute('class', 'bookEntry'); /*add bookEntry class to entry div*/
-        
-        //create ps for book entry info
-        const titleP = document.createElement("p");
-        const authorP = document.createElement("p");
-        const pagesP = document.createElement("p");
-        const statusP = document.createElement("p");
+        newEntry.classList.add("bookEntry"); /*add bookEntry class to entry div*/
 
-        //append as children to entry div
-        
+        //iterate through all keys in current book object
+        for (const key in item){
+            //create a new text span and store as a variable
+            const newElem = document.createElement("span");
+            
+            newElem.classList.add(`${key}`); //add current key as class to span
+            newEntry.appendChild(newElem); //append new element to new entry div
+            
+            //set text content of new entry to the value associated with the key
+            newElem.textContent = item[key];
+        }
 
+        //append the new entry as a child of the book list
+        blist.appendChild(newEntry);
     }
 }
