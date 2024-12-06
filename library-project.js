@@ -40,32 +40,40 @@ function isIterable(obj) {
     return typeof obj[Symbol.iterator] === 'function';
   }
 
-/*FUNCTION to loop through library array and display each book on page*/
-//create variable holding reference to bookList
+//FUNCTION to add a new book entry to a page
+function makeBookEntry(item, list){
+    const newEntry = document.createElement("div"); //create a new entry div and store in variables
+    newEntry.classList.add("bookEntry"); /*add bookEntry class to entry div*/
+    
+    //iterate through all keys in current book object
+    for (const key in item){
+        //create a new text span and store as a variable
+        const newElem = document.createElement("span");
+        
+        newElem.classList.add(`${key}`); //add current key as class to span
+        newEntry.appendChild(newElem); //append new element to new entry div
+        
+        //set text content of new entry to the value associated with the key
+        newElem.textContent = item[key];
+
+        //append the new entry as a child of the book list
+        list.appendChild(newEntry);
+    };
+}
+
+
+//FUNCTION to loop through library array and display each book on page
 function appendBookToPage(library){
     //create variable holding reference to book list container div
     const blist = document.querySelector(".bookList");
     
-    //iterate through all book objects in library array
-    for(const item of library){
-        
-        //create a new entry div and store in variables
-        const newEntry = document.createElement("div");
-        newEntry.classList.add("bookEntry"); /*add bookEntry class to entry div*/
-
-        //iterate through all keys in current book object
-        for (const key in item){
-            //create a new text span and store as a variable
-            const newElem = document.createElement("span");
-            
-            newElem.classList.add(`${key}`); //add current key as class to span
-            newEntry.appendChild(newElem); //append new element to new entry div
-            
-            //set text content of new entry to the value associated with the key
-            newElem.textContent = item[key];
+    //check if library is iterable; if so, iterate, if not, just run newEntry function
+    if(isIterable(library)){ 
+        //iterate through all book objects in library array  
+        for(const item of library){
+            newEntry = makeBookEntry(item, blist);
         }
-
-        //append the new entry as a child of the book list
-        blist.appendChild(newEntry);
-    }
+    } else {
+        newEntry = makeBookEntry(library, blist);
+    }  
 }
