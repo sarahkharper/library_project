@@ -75,23 +75,21 @@ function makeBookEntry(item, list, itemCount){
     newEntry.appendChild(removeButton);
     /*removeButton.addEventListener("click", removeBook);*/
     removeButton.addEventListener("click", () => {
-        itemCount 
-        ... append ... makeBookEntry()
-    });*/
-
-
-    addEventListener("click", {
+        myLibrary.splice(itemCount,1);
+        appendBookToPage(myLibrary);
+    });
+   /* addEventListener("click", {
         itemCount: itemCount,
         invoke: rem,
-    });
+    });*/
 
     //append the new entry as a child of the book list
     list.appendChild(newEntry);
 }
 
-function rem() {
+/*function rem() {
     let itemToRemove = this.itemCount;
-}
+}*/
 
 //FUNCTION to remove all elements in a certain class
 function removeElementsByClass(className){
