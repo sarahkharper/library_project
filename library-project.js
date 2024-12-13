@@ -2,23 +2,28 @@
 
 const myLibrary = [];
 
-function Book(title, author, pageLength, finished){
+function Book(title, author, pageLength, status){
     if (!new.target) {
         throw Error('Must use the new operator to call the function');
     }
     this.title = title;
     this.author = author;
     this.pageLength = pageLength;
-    this.finished = finished;
+    this.status = status;
+}
 
-    //function for printing information about object
-    /*this.info = function(){
-        return(`${this.title} by ${this.author}, ${this.pageLength} pages, ${this.finished}`);
-    };*/
+Book.prototype.changeStatus = function(){
+    if (this.status == "Already Read"){
+        this.status = "Not Started";
+    } else if (this.status == "In Progress"){
+        this.status = "Already Read";
+    } else if (this.status == "Not Started"){
+        this.status = "In Progress";
+    };
 }
 
 /*function for creating book objs and adding them to library array*/
-function addBookToLibrary(libraryArray, bookObj, title, author, pageLength, finished) {
+function addBookToLibrary(libraryArray, bookObj, title, author, pageLength, status) {
     if (arguments.length == 2){
         if (typeof bookObj != 'object'){
             throw Error("Book must be a preexisting object or information to create object must be included");
@@ -28,7 +33,7 @@ function addBookToLibrary(libraryArray, bookObj, title, author, pageLength, fini
     } else if (arguments.length < 2){
         throw Error("Insufficient information to add book to library");
     } else {
-        bookObj = new Book(title, author, pageLength, finished);
+        bookObj = new Book(title, author, pageLength, status);
         libraryArray.push(bookObj); /*add new book obj to library array*/
     }
 }
@@ -45,7 +50,7 @@ addBookToLibrary(myLibrary, "gomens", "Good Omens", "Terry Prachett & Neil Gaima
 
 addBookToLibrary(myLibrary, "sandman", "The Sandman", "Neil Gaiman", "2,168", "In Progress");
 
-//FUNCTION to check if object is iterable (used in appendBookToPage function)
+//FUNCTION to check if object is iterable (used in updateUI function)
 function isIterable(obj) {
     return typeof obj[Symbol.iterator] === 'function';
   }
@@ -58,15 +63,26 @@ function makeBookEntry(item, list, itemCount){
     
     //iterate through all keys in current book object
     for (const key in item){
-        //create a new text span and store as a variable
-        const newElem = document.createElement("span");
-        
-        newElem.classList.add(`${key}`); //add current key as class to span
-        newEntry.appendChild(newElem); //append new element to new entry div
-        
-        //set text content of new entry to the value associated with the key
-        newElem.textContent = item[key];
+        if(item.hasOwnProperty(key)) {
+            //create a new text span and store as a variable
+            const newElem = document.createElement("span");
+            newElem.classList.add(`${key}`); //add current key as class to span
+            newEntry.appendChild(newElem); //append new element to new entry div
+            
+            //set text content of new entry to the value associated with the key
+            newElem.textContent = item[key];
+        }
     };
+    
+    //add button to change status of entry
+    const updateStatusBtn = document.createElement("button");
+    const statusSpan = newEntry.querySelector(".status");
+    statusSpan.appendChild(updateStatusBtn);
+    updateStatusBtn.textContent = "Update";
+    updateStatusBtn.addEventListener("click", () => {
+        myLibrary[itemCount].changeStatus();
+        updateUI(myLibrary);
+    });
 
     //add remove button to book entry
     const removeButton = document.createElement("button");
@@ -76,7 +92,7 @@ function makeBookEntry(item, list, itemCount){
     /*removeButton.addEventListener("click", removeBook);*/
     removeButton.addEventListener("click", () => {
         myLibrary.splice(itemCount,1);
-        appendBookToPage(myLibrary);
+        updateUI(myLibrary);
     });
    /* addEventListener("click", {
         itemCount: itemCount,
@@ -100,7 +116,7 @@ function removeElementsByClass(className){
 }
 
 //FUNCTION to loop through library array and display each book on page
-function appendBookToPage(library){
+function updateUI(library){
     //create variable holding reference to book list container div
     const blist = document.querySelector(".bookList");
     let itemCount = 0;
@@ -121,7 +137,7 @@ function appendBookToPage(library){
     }  
 }
 
-appendBookToPage(myLibrary);
+updateUI(myLibrary);
 
 //FUNCTION to open add new book to library modal dialog
 const modal = document.querySelector("dialog");
@@ -158,14 +174,14 @@ function appendBookFromClick(event){
     newBook = new Book(document.querySelector('[name="title"]').value,
     document.querySelector('[name="author"]').value, 
     document.querySelector('[name="pageLength"]').value,
-    document.querySelector('[name="finished"]').value);
+    document.querySelector('[name="status"]').value);
 
     modal.close();
     modal.classList.toggle('modal-active');
 
     //add new book to page and to library
     addBookToLibrary(myLibrary, newBook);
-    appendBookToPage(myLibrary);
+    updateUI(myLibrary);
 }
 
 //FUNCTION to remove book from library
@@ -196,6 +212,6 @@ removeBtns.forEach(btn => {
                 }
             }*/
             //remove book entry from DOM and update index classes
-        appendBookToPage(myLibrary);
+        updateUI(myLibrary);
         removeBtns = document.querySelectorAll('.removeBtn');
     }
