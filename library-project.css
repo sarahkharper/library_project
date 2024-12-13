@@ -88,19 +88,52 @@ h1, h2, h3, h4, h5 {
 
 .bookList{
     display: grid;
-    grid-auto-rows: minmax(0, 1fr);
+    grid-auto-rows: min-content;
     grid-auto-flow: row;
+    row-gap: 5%;
+
+    >:first-child{
+      grid-row-start: 1;
+      margin-top: 10px;
+    }
 }
 
 .bookEntry{
-    display: flex;
-    justify-content: space-evenly;
-    gap: 5%;
+    /*display: flex;
+    justify-content: space-between;*/
+    display: grid;
+    grid-template-columns: repeat(2, minmax(min-content, 2fr)) repeat(3, minmax(min-content, 1fr));
+    column-gap: 3%;
+    align-self: center;
+    margin-left: 15px;
+    margin-right: 15px;
 
     p{
         flex: 0 0 auto;
     }
+
+    .removeBtn{
+      height: 30px;
+      width: min-content;
+      justify-self: end;
+    }
 }
 
-.title{
+.flex-container{
+  position: relative;
 }
+
+.modal-active{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: min-content;
+  margin-left: auto;
+  top: 15%;
+  right: 1rem;
+}
+/*.button-container{
+  display: flex;
+  flex-direction: row;
+  height: min-content;
+}*/
