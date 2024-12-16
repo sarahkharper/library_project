@@ -2,7 +2,26 @@
 
 const myLibrary = [];
 
-function Book(title, author, pageLength, status){
+class Book {
+    
+    constructor(title, author, pageLength, status){
+        this.title = title;
+        this.author = author;
+        this.pageLength = pageLength;
+        this.status = status;
+    }
+
+    changeStatus() {
+        if (this.status == "Already Read"){
+            this.status = "Not Started";
+        } else if (this.status == "In Progress"){
+            this.status = "Already Read";
+        } else if (this.status == "Not Started"){
+            this.status = "In Progress";
+        };
+    }
+}
+/*function Book(title, author, pageLength, status){
     if (!new.target) {
         throw Error('Must use the new operator to call the function');
     }
@@ -10,7 +29,7 @@ function Book(title, author, pageLength, status){
     this.author = author;
     this.pageLength = pageLength;
     this.status = status;
-}
+}*/
 
 Book.prototype.changeStatus = function(){
     if (this.status == "Already Read"){
